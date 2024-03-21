@@ -1,5 +1,5 @@
-# GLPC
-implementation of GLPC
+# IDGC
+implementation of IDGC
 
 ## Requirements
 ```
@@ -13,7 +13,7 @@ pip install rdkit
 ```
 ## Usage
 
-You can run GLPC by
+You can run IDGC by
 ```
 python -m models.train
 ```
