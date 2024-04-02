@@ -7,7 +7,8 @@ class ClusterParser:
     def __init__(self):
         super().__init__()
         # cluster part
-        self.num_cluster = 10
+        self.loop_num = 5
+        self.num_cluster = 2
         self.update_epoch = 1
         self.init_train_random = True
         self.reassign_center = True
@@ -17,7 +18,7 @@ class ClusterParser:
         self.draw_init = False
         self.draw_tsne_anlysis = False
         # pca part
-        self.pca_dimension = 8
+        self.pca_dimension = 2
         self.auto_pca = False
         self.pca_norm = False
 
@@ -26,11 +27,11 @@ class TrainParser:
     def __init__(self):
         super().__init__()
         self.learning_rate = 0.05
-        self.batch_size = 20
+        self.batch_size = 24
         self.weight_decay = 0.0
-        self.max_epochs = 60
+        self.max_epochs = 80
         self.save_epoch = 10
-        self.early_stopping = 45
+        self.early_stopping = 50
         self.last_layer_optimizer_lr = 1e-4  # the learning rate of the last layer
         self.joint_optimizer_lrs = {
             "features": 1e-4,
@@ -46,14 +47,14 @@ class TrainParser:
 class DataParser:
     def __init__(self):
         super().__init__()
-        self.dataset_name = "COX2"
+        self.dataset_name = "BZR"
         self.dataset_dir = "./datasets"
         self.task = None
         self.random_split: bool = True
         self.data_split_ratio: List = [
-            0.9,
-            0.05,
-            0.05,
+            0.98,
+            0.01,
+            0.01,
         ]  # the ratio of training, validation and testing set for random split
         # self.data_split_ratio = None
         self.seed = 1
@@ -139,9 +140,8 @@ import torch
 import random
 import numpy as np
 
-random_seed = 1234
+random_seed = 123
 random.seed(random_seed)
 np.random.seed(random_seed)
 torch.manual_seed(random_seed)
 torch.cuda.manual_seed_all(random_seed)
-

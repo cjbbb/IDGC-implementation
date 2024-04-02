@@ -14,6 +14,7 @@ from mol_dataset import MoleculeDataset
 import sklearn.preprocessing as preprocessing
 import random
 
+
 def undirected_graph(data):
     data.edge_index = torch.cat(
         [torch.stack([data.edge_index[1], data.edge_index[0]], dim=0), data.edge_index],
@@ -148,7 +149,7 @@ def get_dataset(dataset_dir, dataset_name, task=None):
         return load_MolecueNet(dataset_dir, dataset_name, task)
     elif dataset_name.lower() in sentigraph_names:
         return load_SeniGraph(dataset_dir, dataset_name)
-    elif dataset_name.lower() in ["cox2","enzymes","bzr","nci1"]:
+    elif dataset_name.lower() in ["cox2", "enzymes", "bzr", "nci1"]:
         return TUDataset(dataset_dir, dataset_name)
     else:
         raise NotImplementedError
@@ -213,9 +214,7 @@ class MUTAGDataset(InMemoryDataset):
         for i in range(1, 189):
             idx = np.where(graph_indicator == i)
             graph_len = len(idx[0])
-            adj = adj_all[
-                idx[0][0] : idx[0][0] + graph_len, idx[0][0] : idx[0][0] + graph_len
-            ]
+            adj = adj_all[idx[0][0] : idx[0][0] + graph_len, idx[0][0] : idx[0][0] + graph_len]
             label = int(graph_labels[i - 1] == 1)
             feature = nodes_all[idx[0][0] : idx[0][0] + graph_len]
             nb_clss = 7
@@ -233,41 +232,41 @@ class MUTAGDataset(InMemoryDataset):
 
 class Mutagenicity(InMemoryDataset):
 
-    url = ('https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/Mutagenicity.zip')
+    url = "https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/Mutagenicity.zip"
 
-    splits = ['training', 'evaluation', 'testing']
+    splits = ["training", "evaluation", "testing"]
 
-    def __init__(self, root, mode='testing', transform=None, pre_transform=None, pre_filter=None):
+    def __init__(self, root, mode="testing", transform=None, pre_transform=None, pre_filter=None):
 
         assert mode in self.splits
         self.mode = mode
         super(Mutagenicity, self).__init__(root, transform, pre_transform, pre_filter)
 
-        idx = self.processed_file_names.index('{}.pt'.format(mode))
+        idx = self.processed_file_names.index("{}.pt".format(mode))
         self.data, self.slices = torch.load(self.processed_paths[0])
-
 
     @property
     def raw_file_names(self):
 
-        return ['Mutagenicity/' + i \
-                for i in [
-                    'Mutagenicity_A.txt',
-                    'Mutagenicity_edge_labels.txt',
-                    'Mutagenicity_graph_indicator.txt',
-                    'Mutagenicity_graph_labels.txt',
-                    'Mutagenicity_node_labels.txt',
-                    ]
-                ]
+        return [
+            "Mutagenicity/" + i
+            for i in [
+                "Mutagenicity_A.txt",
+                "Mutagenicity_edge_labels.txt",
+                "Mutagenicity_graph_indicator.txt",
+                "Mutagenicity_graph_labels.txt",
+                "Mutagenicity_node_labels.txt",
+            ]
+        ]
 
     @property
     def processed_file_names(self):
-        return ['training.pt', 'evaluation.pt', 'testing.pt']
+        return ["training.pt", "evaluation.pt", "testing.pt"]
 
     def download(self):
 
-        if os.path.exists(osp.join(self.raw_dir, 'Mutagenicity')):
-            print('Using existing data in folder Mutagenicity')
+        if os.path.exists(osp.join(self.raw_dir, "Mutagenicity")):
+            print("Using existing data in folder Mutagenicity")
             return
 
         path = download_url(self.url, self.raw_dir)
@@ -276,7 +275,7 @@ class Mutagenicity(InMemoryDataset):
 
     def process(self):
 
-        edge_index = np.loadtxt(osp.join(self.raw_dir, self.raw_file_names[0]), delimiter=',').T
+        edge_index = np.loadtxt(osp.join(self.raw_dir, self.raw_file_names[0]), delimiter=",").T
         edge_index = torch.from_numpy(edge_index - 1.0).to(torch.long)  # node idx from 0
 
         edge_label = np.loadtxt(osp.join(self.raw_dir, self.raw_file_names[1]))
@@ -307,10 +306,15 @@ class Mutagenicity(InMemoryDataset):
                 if int(edge_index[0, end]) > bound:
                     break
 
-            data = Data(x=x[perm], y=y[i], z=node_label[perm],
-                        edge_index=edge_index[:, begin:end] - int(min(perm)),
-                        edge_attr=edge_attr[begin:end],
-                        name="mutag_%d" % i, idx=i)
+            data = Data(
+                x=x[perm],
+                y=y[i],
+                z=node_label[perm],
+                edge_index=edge_index[:, begin:end] - int(min(perm)),
+                edge_attr=edge_attr[begin:end],
+                name="mutag_%d" % i,
+                idx=i,
+            )
 
             if self.pre_filter is not None and not self.pre_filter(data):
                 continue
@@ -326,6 +330,7 @@ class Mutagenicity(InMemoryDataset):
         torch.save(self.collate(data_list[1000:]), self.processed_paths[0])
         torch.save(self.collate(data_list[500:1000]), self.processed_paths[1])
         torch.save(self.collate(data_list[:500]), self.processed_paths[2])
+
 
 class SentiGraphDataset(InMemoryDataset):
     def __init__(self, root, name, transform=None, pre_transform=undirected_graph):
@@ -361,9 +366,7 @@ class SentiGraphDataset(InMemoryDataset):
 
     def process(self):
         # Read data into huge `Data` list.
-        self.data, self.slices, self.supplement = read_sentigraph_data(
-            self.raw_dir, self.name
-        )
+        self.data, self.slices, self.supplement = read_sentigraph_data(self.raw_dir, self.name)
 
         if self.pre_filter is not None:
             data_list = [self.get(idx) for idx in range(len(self))]
@@ -449,9 +452,11 @@ def load_MUTAG(dataset_dir, dataset_name):
     dataset = MUTAGDataset(root=dataset_dir, name=dataset_name)
     return dataset
 
+
 def load_Mutagenicity(dataset_dir, dataset_name):
     dataset = Mutagenicity(root=dataset_dir)
     return dataset
+
 
 def load_syn_data(dataset_dir, dataset_name):
     """The synthetic dataset"""
@@ -467,7 +472,7 @@ def load_syn_data(dataset_dir, dataset_name):
 def load_MolecueNet(dataset_dir, dataset_name, task=None):
     """Attention the multi-task problems not solved yet"""
 
-    dataset = MoleculeDataset(root="./datasets", name="BBBP")
+    dataset = MoleculeNet(root="./datasets", name="BBBP")
     print(dataset.data)
     dataset.data.x = dataset.data.x.float()
     dataset.data.y = dataset.data.y[:, 0].long()
@@ -481,9 +486,7 @@ def load_SeniGraph(dataset_dir, dataset_name):
     return dataset
 
 
-def get_dataloader(
-    dataset, batch_size, random_split_flag=True, data_split_ratio=None, seed=5
-):
+def get_dataloader(dataset, batch_size, random_split_flag=True, data_split_ratio=None, seed=5):
     """
     Args:
         dataset:
@@ -521,13 +524,7 @@ def get_dataloader(
         )
 
     dataloader = dict()
-    dataloader["train"] = DataLoader(
-        train, batch_size=batch_size, shuffle=False, drop_last=False
-    )
-    dataloader["eval"] = DataLoader(
-        eval, batch_size=batch_size, shuffle=False, drop_last=False
-    )
-    dataloader["test"] = DataLoader(
-        test, batch_size=batch_size, shuffle=False, drop_last=False
-    )
+    dataloader["train"] = DataLoader(train, batch_size=batch_size, shuffle=False, drop_last=False)
+    dataloader["eval"] = DataLoader(eval, batch_size=batch_size, shuffle=False, drop_last=False)
+    dataloader["test"] = DataLoader(test, batch_size=batch_size, shuffle=False, drop_last=False)
     return dataloader
