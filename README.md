@@ -17,7 +17,7 @@ pip install rdkit
 ```
 ## Usage
 
-You can run IDGC by
+ run IDGC by
 ```
 python -m models.train
 ```
