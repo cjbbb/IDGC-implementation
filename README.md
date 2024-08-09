@@ -44,7 +44,7 @@ If you find this work useful in your research, please consider citing:
 ```
 @inproceedings{your_paper_reference,
   title={Interpretable Deep Graph Clustering},
-  author={Your Name and Others},
+  author={Jianbin Cui, Lingyang Chu},
   booktitle={Proceedings of the 2024 International Conference on Pattern Recognition (ICPR)},
   year={2024}
 }
