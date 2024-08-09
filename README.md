@@ -1,6 +1,6 @@
-# IDGC: Interpretable Deep Graph Clustering
+# IDGC: Interpretable Deep Graph-level Clustering
 
-This repository contains the implementation of **IDGC (Interpretable Deep Graph Clustering)**, a novel approach for interpretable and efficient graph clustering. Our work has been accepted for presentation at **ICPR 2024 (International Conference on Pattern Recognition)**.
+This repository contains the implementation of **IDGC (Interpretable Deep Graph-level Clustering)**, a novel approach for interpretable and efficient graph clustering. Our work has been accepted for presentation at **ICPR 2024 (International Conference on Pattern Recognition)**.
 
 ## Overview
 
