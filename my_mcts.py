@@ -47,9 +47,7 @@ def mcts_rollout(tree_node, state_map, data, graph, score_func):
     # Expand if this node has never been visited
     if len(tree_node.children) == 0:
         node_degree_list = list(graph.subgraph(cur_graph_coalition).degree)
-        node_degree_list = sorted(
-            node_degree_list, key=lambda x: x[1], reverse=mcts_args.high2low
-        )
+        node_degree_list = sorted(node_degree_list, key=lambda x: x[1], reverse=mcts_args.high2low)
         all_nodes = [x[0] for x in node_degree_list]
 
         if len(all_nodes) < mcts_args.expand_atoms:
@@ -192,11 +190,9 @@ if __name__ == "__main__":
     gnnNets.update_state_dict(checkpoint["net"])
     gnnNets.to_device()
     gnnNets.eval()
-    prototype_vectors=gnnNets.model.prototype_vectors
+    prototype_vectors = gnnNets.model.prototype_vectors
 
-    save_dir = os.path.join(
-        "./results", f"{mcts_args.dataset_name}_" f"{model_args.model_name}_"
-    )
+    save_dir = os.path.join("./results", f"{mcts_args.dataset_name}_" f"{model_args.model_name}_")
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
     plotutils = PlotUtils(dataset_name=data_args.dataset_name)
@@ -206,7 +202,7 @@ if __name__ == "__main__":
         data = dataset[i.item()]
         for j in range(10):
             coalition, score, _ = mcts(data, gnnNets, prototype_vectors[j])
-            # 
+            #
             graph = to_networkx(data, to_undirected=True)
             plotutils.plot(
                 graph,
@@ -218,4 +214,3 @@ if __name__ == "__main__":
             print(f"example_{i*10+j}_{data.y}.png")
             print(coalition)
             print(score)
-    
